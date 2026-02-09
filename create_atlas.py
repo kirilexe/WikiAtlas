@@ -21,14 +21,12 @@ else:
     degree_counts = all_nodes.value_counts().to_dict() 
 
     for index, row in df.iterrows():
-        source = str(row['Source'])
-        target = str(row['Target'])
+        source = str(row['Source']).strip().capitalize()
+        target = str(row['Target']).strip().capitalize()
 
-        source_degree = degree_counts.get(source, 1)
-        target_degree = degree_counts.get(target, 1)
-
-        net.add_node(source, label=source, size=10 + (source_degree * 2)) # label=source and label=target are important or it throws an error
-        net.add_node(target, label=target, size=10 + (target_degree * 2))
+        net.add_node(source, label=source, size=10 + (degree_counts.get(source, 1) * 2))
+        net.add_node(target, label=target, size=10 + (degree_counts.get(target, 1) * 2))
+        net.add_edge(source, target)
         
         net.add_edge(source, target)
 
