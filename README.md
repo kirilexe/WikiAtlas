@@ -4,7 +4,7 @@ This is a small project I'm building to learn the fundamentals of web crawling a
 A Python tool to map the relationships between Wikipedia articles.
 
 ## Status
-Works, not product ready. Needs manual changes in the code if you want to try it for another Wikipedia topic that is not Animals.
+First working version from console only. Run `main.py` and write any Wikipedia article name to generate and open a map of it.
 
 ## Demo of the "Animals" graph.
 
