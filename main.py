@@ -2,13 +2,14 @@ import requests
 import time
 import json
 import csv
+from create_atlas import create_atlas
 
 API_URL = "https://en.wikipedia.org/w/api.php"
 headers = {
     "user-agent": "Mini-Project for wikipedia mapping."
 }
 
-title = "Animal"
+title = input("Enter a Wikipedia page title: ").strip()
 filename = title + "_links.csv"
 with open(filename, 'w', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
@@ -21,6 +22,8 @@ def get_links(title):
         "titles": title,
         "prop": "links",
         "pllimit": "50",
+        "redirects": "1",
+        "namespace": "0"
     }
     try:
         response = requests.get(API_URL, headers=headers, params=params)
@@ -42,7 +45,7 @@ def save_connection(source, target):
         writer.writerow([source, target])
 
 # fetch the links for the title
-print("Fetching links for the title: {title}")
+print("Fetching links for the title:", title)
 layer1_links = get_links(title)
 
 for link in layer1_links:
@@ -57,6 +60,9 @@ for link in layer1_links:
         l2_title = sublink["title"]
         save_connection(l1_title, l2_title)
 
+
+print("Data collection complete. Generating atlas...")
+create_atlas(filename)
 
 
 """
