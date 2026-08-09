@@ -9,6 +9,7 @@ def create_atlas(filename):
         width="100%", 
         bgcolor="#222222", 
         font_color="white", 
+        directed=False,
         cdn_resources='remote'
     )
 
@@ -16,7 +17,7 @@ def create_atlas(filename):
 
     if os.path.exists(csv_file):
         df = pd.read_csv(csv_file)
-
+        
         df['Source'] = df['Source'].astype(str).str.strip().str.capitalize()
         df['Target'] = df['Target'].astype(str).str.strip().str.capitalize()
 

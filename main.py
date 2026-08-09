@@ -2,11 +2,13 @@ import requests
 import time
 import json
 import csv
+
 from create_atlas import create_atlas
+
 
 API_URL = "https://en.wikipedia.org/w/api.php"
 headers = {
-    "user-agent": "Mini-Project for wikipedia mapping."
+    "user-agent": "Mini Project for wikipedia mapping."
 }
 
 title = input("Enter a Wikipedia page title: ").strip()
@@ -15,7 +17,7 @@ with open(filename, 'w', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
     writer.writerow(['Source', 'Target']) # header for the file
 
-def get_links(title):
+def get_links(title, limit=50):
     params = {
         "action": "query",
         "format": "json",
@@ -32,11 +34,30 @@ def get_links(title):
 
         for page_id in pages: 
             if "links" in pages[page_id]:
-                return pages[page_id]["links"] # make sure it actually returns something
+                links = pages[page_id]["links"]
+
+                # remove obvious junk links
+                filtered = [
+                    link for link in links 
+                    if not any(x in link["title"].lower() for x in [
+                        "disambiguation",
+                        "stub",
+                        "redirect:",
+                        "template:",
+                        "category:",
+                        "file:",
+                        "wikipedia:",
+                        "help:",
+                        "portal:"
+                    ])
+                ]
+                
+                return filtered[:limit]
             else:
                 print(f"No links found for {title}")
                 return [] 
-    except:
+    except Exception as e:
+        print(f"Error fetching {title}: {e}")
         return []
 
 def save_connection(source, target):
@@ -48,7 +69,7 @@ def save_connection(source, target):
 print("Fetching links for the title:", title)
 layer1_links = get_links(title)
 
-for link in layer1_links:
+for link in (layer1_links or []):
     l1_title = link["title"]
     save_connection(title, l1_title)
     print(f"Fetched link: {l1_title}")
@@ -56,25 +77,11 @@ for link in layer1_links:
     print(f"  Fetching Layer 2: {l1_title}")
     layer2_links = get_links(l1_title)
     
-    for sublink in layer2_links:
+    for sublink in (layer2_links or []):
         l2_title = sublink["title"]
         save_connection(l1_title, l2_title)
 
+    time.sleep(0.1)
 
 print("Data collection complete. Generating atlas...")
 create_atlas(filename)
-
-
-"""
-# base logic 
-for page_id in pages:
-    if "links" in pages[page_id]:
-        print("Links from {title}") 
-        for link in pages[page_id]["links"]:
-            print(link["title"])
-    else:
-        print(f"No links found for {title}")
-"""
-
-
-
