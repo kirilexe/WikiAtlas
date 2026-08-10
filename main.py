@@ -4,12 +4,7 @@ import json
 import csv
 
 from create_atlas import create_atlas
-
-
-API_URL = "https://en.wikipedia.org/w/api.php"
-headers = {
-    "user-agent": "Mini Project for wikipedia mapping."
-}
+from bs4 import BeautifulSoup
 
 title = input("Enter a Wikipedia page title: ").strip()
 filename = title + "_links.csv"
@@ -18,45 +13,38 @@ with open(filename, 'w', newline='', encoding='utf-8') as f:
     writer.writerow(['Source', 'Target']) # header for the file
 
 def get_links(title, limit=50):
-    params = {
-        "action": "query",
-        "format": "json",
-        "titles": title,
-        "prop": "links",
-        "pllimit": "50",
-        "redirects": "1",
-        "namespace": "0"
+    url = f"https://en.wikipedia.org/api/rest_v1/page/html/{title}"
+    headers = {
+        "user-agent": "WikiAtlas 0.0.1 (67431669+ic0e@users.noreply.github.com)"
     }
     try:
-        response = requests.get(API_URL, headers=headers, params=params)
-        data = response.json()
-        pages = data["query"]["pages"]
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            print(f"Failed to fetch page: {response.status_code}")
+            return []
 
-        for page_id in pages: 
-            if "links" in pages[page_id]:
-                links = pages[page_id]["links"]
+        soup = BeautifulSoup(response.text, "html.parser")
 
-                # remove obvious junk links
-                filtered = [
-                    link for link in links 
-                    if not any(x in link["title"].lower() for x in [
-                        "disambiguation",
-                        "stub",
-                        "redirect:",
-                        "template:",
-                        "category:",
-                        "file:",
-                        "wikipedia:",
-                        "help:",
-                        "portal:"
-                    ])
-                ]
-                
-                return filtered[:limit]
-            else:
-                print(f"No links found for {title}")
-                return [] 
-    except Exception as e:
+        links = []
+        seen = set()
+
+        # get all <a> tags inside the <p> tags
+        for a in soup.select("p > a[href^='./']"):
+            href = a.get("href", "")
+
+            # clears the link title from "./Link" -> "Link"
+            link_title = href.replace("./", "").replace("_", "")
+
+            if ":" not in link_title and link_title not in seen:
+                seen.add(link_title)
+                links.append(link_title)
+
+                if len(links) >= limit:
+                    break
+
+        return links
+
+    except Exception as e: 
         print(f"Error fetching {title}: {e}")
         return []
 
@@ -69,16 +57,14 @@ def save_connection(source, target):
 print("Fetching links for the title:", title)
 layer1_links = get_links(title)
 
-for link in (layer1_links or []):
-    l1_title = link["title"]
+for l1_title in layer1_links:
     save_connection(title, l1_title)
     print(f"Fetched link: {l1_title}")
 
     print(f"  Fetching Layer 2: {l1_title}")
     layer2_links = get_links(l1_title)
-    
-    for sublink in (layer2_links or []):
-        l2_title = sublink["title"]
+
+    for l2_title in layer2_links:
         save_connection(l1_title, l2_title)
 
     time.sleep(0.1)
