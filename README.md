@@ -1,12 +1,15 @@
-# WikiAtlas
+# WikiAtlas • [![Python](https://img.shields.io/badge/Python-3.14-3776ab?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 
-This is a small project I'm building to learn the fundamentals of web crawling and data relationship mapping.
-A Python tool to map the relationships between Wikipedia articles.
+A curiousity driven project that maps Wikipedia article relationships as interactive network graphs. Scrapes Wikipedia and visualizes relationships between different links.
 
-## Status
-First working version from console only. Run `main.py` and write any Wikipedia article name to generate and open a map of it.
+> WARNING: This is still WIP and for fun, not a serious project.
 
-## Demo of the "Animals" graph.
+## What it does
+Crawls Wikipedia starting from any article, follows links through configurable depth levels, and generates an interactive  graph visualization. Shows how Wikipedia articles are connected with each other.
+
+**Example:** Starting from "Animal" -> scrapes related articles -> generates a graph revealing semantic clusters (cells, biology, ecology, etc.) without manual categorization.
+
+## Showcase of a graph generated from the "Animal" article: (OLD)
 
 ### Zoomed out
 <img width="1790" height="827" alt="image" src="https://github.com/user-attachments/assets/59d33138-7d89-47e8-865f-1d315592bd08" />
@@ -15,11 +18,13 @@ First working version from console only. Run `main.py` and write any Wikipedia a
 <img width="1847" height="849" alt="image" src="https://github.com/user-attachments/assets/c608cf03-82c6-4905-ba06-d00ba0b8ea91" />
 
 ## Setup
+
+*Download the needed libraries:*
 ```bash
-pip install requests
+pip install -r requirements.txt
 ```
 
-## Start
+*Start WikiAtlas:*
 ```bash
 python main.py
 ```

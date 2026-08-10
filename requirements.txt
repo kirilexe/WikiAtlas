@@ -1,0 +1,4 @@
+pandas
+pyvis
+requests
+beautifulsoup4

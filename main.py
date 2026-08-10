@@ -43,7 +43,7 @@ def get_links(title, limit=25):
             href = a.get("href", "")
 
             # clears the link title from "./Link" -> "Link"
-            link_title = href.replace("./", "").replace("_", "")
+            link_title = href.replace("./", "").replace("_", " ")
 
             if ":" not in link_title and link_title not in seen:
                 seen.add(link_title)
