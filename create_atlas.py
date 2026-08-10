@@ -10,7 +10,7 @@ def create_atlas(filename):
         height="100vh",
         width="100%",
         bgcolor="#222222",
-        font_color="white",
+        font_color="white", # type: ignore -- ignore type check here
         directed=False,
         cdn_resources="remote",
     )
