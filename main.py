@@ -1,32 +1,34 @@
-import requests
-import time
-import json
 import csv
+import json
+import time
+
+import requests
+from bs4 import BeautifulSoup
 
 from create_atlas import create_atlas
-from bs4 import BeautifulSoup
 
 title = input("Enter a Wikipedia page title: ").strip()
 
 limit = 25
 
 try:
-    user_input = input("Enter a links limit (e.g: 50 for bigger maps, 25 for smaller): ").strip()
+    user_input = input(
+        "Enter a links limit (e.g: 50 for bigger maps, 25 for smaller): "
+    ).strip()
     if user_input:  # checks if its not just empty
         limit = int(user_input)
 except ValueError:
     print(f"Invalid input. Proceeding with default limit: {limit}")
 
 filename = title + "_links.csv"
-with open(filename, 'w', newline='', encoding='utf-8') as f:
+with open(filename, "w", newline="", encoding="utf-8") as f:
     writer = csv.writer(f)
-    writer.writerow(['Source', 'Target']) # header for the file
+    writer.writerow(["Source", "Target"])  # header for the file
+
 
 def get_links(title, limit=25):
     url = f"https://en.wikipedia.org/api/rest_v1/page/html/{title}"
-    headers = {
-        "user-agent": "WikiAtlas 0.0.1 (67431669+ic0e@users.noreply.github.com)"
-    }
+    headers = {"user-agent": "WikiAtlas 0.0.1 (67431669+ic0e@users.noreply.github.com)"}
     try:
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
@@ -54,14 +56,16 @@ def get_links(title, limit=25):
 
         return links
 
-    except Exception as e: 
+    except Exception as e:
         print(f"Error fetching {title}: {e}")
         return []
 
+
 def save_connection(source, target):
-    with open(filename, 'a', newline='', encoding='utf-8') as f:
+    with open(filename, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow([source, target])
+
 
 # fetch the links for the title
 print("Fetching links for the title:", title)
