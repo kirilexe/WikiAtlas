@@ -9,13 +9,17 @@ Crawls Wikipedia starting from any article, follows links through configurable d
 
 **Example:** Starting from "Animal" -> scrapes related articles -> generates a graph revealing semantic clusters (cells, biology, ecology, etc.) without manual categorization.
 
-## Showcase of a graph generated from the "Animal" article: (OLD)
+## Showcase of a graph generated from the "Animal" article:
 
 ### Zoomed out
-<img width="1790" height="827" alt="image" src="https://github.com/user-attachments/assets/59d33138-7d89-47e8-865f-1d315592bd08" />
+<img width="1824" height="853" alt="image" src="https://github.com/user-attachments/assets/0ef9c1e0-5d67-4762-9467-0979cf840e86" />
+
+*The entire map of the "Animal" article with depth = 40.*
 
 ### Closer showcase
-<img width="1847" height="849" alt="image" src="https://github.com/user-attachments/assets/c608cf03-82c6-4905-ba06-d00ba0b8ea91" />
+<img width="1431" height="753" alt="image" src="https://github.com/user-attachments/assets/326766cc-fb11-4c45-805b-42dc48ad741c" />
+
+*All of the related articles are shown, the more connections a node has the bigger it gets.*
 
 ## Setup
 
